@@ -1,0 +1,12 @@
+{
+  "camera_type": "Trajectory",
+  "content_type": "Text",
+  "camera_motion": "Dolly In",
+  "trajectory_json": "assets/trajectories/truck_left.json",
+  "trajectory_camera_id": 1,
+  "prompt": "A small golden retriever puppy runs joyfully along a garden path surrounded by blooming flowers and lush green plants, natural daylight, cinematic movement and realistic fur.",
+  "seed": 0,
+  "steps": 50,
+  "num_frames": 41,
+  "output": "outputs/trajectory_t2v.mp4"
+}

@@ -1,0 +1,19 @@
+.DS_Store
+._*
+__pycache__/
+*.py[cod]
+.venv/
+.env
+
+# Credentials and model weights
+*token*
+*.ckpt
+*.pth
+*.pt
+*.safetensors
+
+# Generated outputs
+outputs/
+*.mp4
+!assets/reference_camera/*.mp4
+!assets/results/*.mp4

@@ -1,0 +1,11 @@
+{
+  "camera_type": "Reference camera video",
+  "content_type": "Text",
+  "camera_motion": "Truck Left",
+  "reference_camera_video": "assets/reference_camera/truck_left.mp4",
+  "prompt": "A small golden retriever puppy runs joyfully along a garden path surrounded by blooming flowers and lush green plants, natural daylight, cinematic movement and realistic fur.",
+  "seed": 0,
+  "steps": 50,
+  "num_frames": 41,
+  "output": "outputs/reference_video_t2v.mp4"
+}

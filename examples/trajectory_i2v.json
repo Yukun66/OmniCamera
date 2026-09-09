@@ -1,0 +1,13 @@
+{
+  "camera_type": "Trajectory",
+  "content_type": "Image",
+  "camera_motion": "Dolly In",
+  "trajectory_json": "assets/trajectories/forward_up_tilt_down.json",
+  "trajectory_camera_id": 1,
+  "prompt": "A small golden retriever puppy runs through a colorful flower garden in bright natural daylight, realistic cinematic motion.",
+  "content_image": "assets/content/dog_garden_start.jpg",
+  "seed": 0,
+  "steps": 50,
+  "num_frames": 41,
+  "output": "outputs/trajectory_i2v.mp4"
+}

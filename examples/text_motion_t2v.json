@@ -1,0 +1,10 @@
+{
+  "camera_type": "Text motion",
+  "content_type": "Text",
+  "camera_motion": "Truck Left",
+  "prompt": "A small golden retriever puppy runs joyfully along a garden path surrounded by blooming flowers and lush green plants, natural daylight, cinematic movement and realistic fur.",
+  "seed": 0,
+  "steps": 50,
+  "num_frames": 41,
+  "output": "outputs/text_motion_t2v.mp4"
+}
