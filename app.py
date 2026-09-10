@@ -110,10 +110,8 @@ def _load_pipeline():
         if _pipeline is not None:
             return _pipeline
         if not torch.cuda.is_available():
-            raise RuntimeError("This Space needs a CUDA GPU for generation.")
+            raise RuntimeError("OmniCamera inference requires a CUDA GPU.")
         token = os.getenv("HF_TOKEN")
-        if not token:
-            raise RuntimeError("Add HF_TOKEN as a Space secret to read the private checkpoint.")
 
         cache_dir = os.getenv("HF_HOME")
         base_dir = snapshot_download(
@@ -129,7 +127,7 @@ def _load_pipeline():
         checkpoint_path = hf_hub_download(
             repo_id=OMNICAMERA_REPO,
             filename=CHECKPOINT_NAME,
-            token=token,
+            token=token or None,
             cache_dir=cache_dir,
         )
         dit_files = sorted(Path(base_dir).glob("diffusion_pytorch_model*.safetensors"))

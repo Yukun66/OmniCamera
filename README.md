@@ -36,12 +36,9 @@ pip install --upgrade pip
 pip install -r requirements.txt
 ```
 
-The base model is downloaded from `Wan-AI/Wan2.2-TI2V-5B`. Set a Hugging Face
-token that can read the OmniCamera checkpoint repository:
-
-```bash
-export HF_TOKEN=hf_your_read_token
-```
+The base model is downloaded from `Wan-AI/Wan2.2-TI2V-5B`, and the public
+OmniCamera checkpoint is downloaded automatically from Hugging Face. No access
+token is required for either repository.
 
 The model repository and checkpoint filename may be overridden without editing
 the code:
