@@ -1,0 +1,11 @@
+{
+  "camera_type": "Text motion",
+  "content_type": "Video",
+  "camera_motion": "Dolly In",
+  "prompt": "Michael Jackson in a white suit and fedora dances energetically with performers in a 1930s-style nightclub, preserving the people, setting, appearance, and choreography of the reference content video.",
+  "content_video": "assets/content/michael_jackson_reference.mp4",
+  "seed": 0,
+  "steps": 40,
+  "num_frames": 41,
+  "output": "outputs/text_motion_v2v_michael_jackson.mp4"
+}

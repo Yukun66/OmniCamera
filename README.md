@@ -75,11 +75,12 @@ configurations demonstrate:
 | `examples/text_motion_t2v_beach.json` | motion text (Truck Left) | beach text |
 | `examples/trajectory_t2v_canyon_lake.json` | Forward-Up + Tilt Down trajectory | canyon-lake text |
 | `examples/reference_video_t2v_ski_resort.json` | Truck Left camera video | ski-resort text |
-| `examples/text_motion_v2v_matrix.json` | motion text (Pan Left) | reference video |
+| `examples/text_motion_v2v_michael_jackson.json` | motion text (Dolly In) | reference video |
 | `examples/reference_video_v2v_michael_jackson.json` | Dolly Out camera video | reference video |
 | `examples/text_motion_i2v_white_car.json` | motion text (Dolly In) | reference image |
-| `examples/trajectory_v2v_matrix.json` | Arc Left trajectory | reference video |
+| `examples/trajectory_v2v_michael_jackson.json` | Arc Right trajectory | reference video |
 | `examples/reference_video_i2v_white_car.json` | Dolly Out camera video | reference image |
+| `examples/reference_video_v2v_matrix.json` | Pan Right camera video | reference video |
 
 Every configuration is ordinary JSON, so prompts, input paths, seeds, frame
 counts and inference steps can be changed directly. The implementation supports
@@ -107,7 +108,7 @@ Three ready-to-run 41-frame trajectory examples are included:
 
 - `assets/trajectories/truck_left.json`
 - `assets/trajectories/forward_up_tilt_down.json`
-- `assets/trajectories/arc_left.json`
+- `assets/trajectories/arc_right.json`
 
 ## Reproducible demos and results
 
@@ -122,11 +123,12 @@ repository, so it can be viewed immediately or regenerated locally:
 | Empty beach and lifeguard tower | motion text: Truck Left | [config](examples/text_motion_t2v_beach.json) | [video](assets/results/beach_text_motion_truck_left.mp4) |
 | Canyon lake | trajectory: Forward-Up + Tilt Down | [config](examples/trajectory_t2v_canyon_lake.json) | [video](assets/results/canyon_lake_trajectory_forward_up_tilt_down.mp4) |
 | Empty ski resort | reference video: Truck Left | [config](examples/reference_video_t2v_ski_resort.json) | [video](assets/results/ski_resort_reference_video_truck_left.mp4) |
-| Matrix-inspired action clip | motion text: Pan Left | [config](examples/text_motion_v2v_matrix.json) | [video](assets/results/matrix_text_motion_pan_left.mp4) |
+| Michael Jackson performance clip | motion text: Dolly In | [config](examples/text_motion_v2v_michael_jackson.json) | [video](assets/results/michael_jackson_text_motion_dolly_in.mp4) |
 | Michael Jackson performance clip | reference video: Dolly Out | [config](examples/reference_video_v2v_michael_jackson.json) | [video](assets/results/michael_jackson_reference_video_dolly_out.mp4) |
 | White car in a canyon | motion text: Dolly In | [config](examples/text_motion_i2v_white_car.json) | [video](assets/results/white_car_text_motion_dolly_in.mp4) |
-| Matrix-inspired action clip | trajectory: Arc Left | [config](examples/trajectory_v2v_matrix.json) | [video](assets/results/matrix_trajectory_arc_left.mp4) |
+| Michael Jackson performance clip | trajectory: Arc Right | [config](examples/trajectory_v2v_michael_jackson.json) | [video](assets/results/michael_jackson_trajectory_arc_right.mp4) |
 | White car in a canyon | reference video: Dolly Out | [config](examples/reference_video_i2v_white_car.json) | [video](assets/results/white_car_reference_video_dolly_out.mp4) |
+| Matrix-inspired action clip | reference video: Pan Right | [config](examples/reference_video_v2v_matrix.json) | [video](assets/results/matrix_reference_video_pan_right.mp4) |
 
 These small files are for qualitative inspection and reproducibility. The
 Matrix and Michael Jackson source clips are third-party research examples and

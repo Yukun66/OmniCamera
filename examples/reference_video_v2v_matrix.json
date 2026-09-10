@@ -1,13 +1,12 @@
 {
-  "camera_type": "Trajectory",
+  "camera_type": "Reference camera video",
   "content_type": "Video",
-  "camera_motion": "Arc Left",
-  "trajectory_json": "assets/trajectories/arc_left.json",
-  "trajectory_camera_id": 9,
+  "camera_motion": "Pan Right",
+  "reference_camera_video": "assets/reference_camera/pan_right.mp4",
   "prompt": "A man in a long black coat bends backward to dodge bullets on a rooftop, with dramatic green-cyan cinematic lighting, preserving the characters, setting, appearance, and actions of the reference content video.",
   "content_video": "assets/content/matrix_reference.mp4",
   "seed": 0,
   "steps": 40,
   "num_frames": 41,
-  "output": "outputs/trajectory_v2v_matrix.mp4"
+  "output": "outputs/reference_video_v2v_matrix.mp4"
 }

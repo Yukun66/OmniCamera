@@ -1,0 +1,13 @@
+{
+  "camera_type": "Trajectory",
+  "content_type": "Video",
+  "camera_motion": "Arc Right",
+  "trajectory_json": "assets/trajectories/arc_right.json",
+  "trajectory_camera_id": 10,
+  "prompt": "Michael Jackson in a white suit and fedora dances energetically with performers in a 1930s-style nightclub, preserving the people, setting, appearance, and choreography of the reference content video.",
+  "content_video": "assets/content/michael_jackson_reference.mp4",
+  "seed": 0,
+  "steps": 40,
+  "num_frames": 41,
+  "output": "outputs/trajectory_v2v_michael_jackson.mp4"
+}
