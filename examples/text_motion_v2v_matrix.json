@@ -1,0 +1,11 @@
+{
+  "camera_type": "Text motion",
+  "content_type": "Video",
+  "camera_motion": "Pan Left",
+  "prompt": "A man in a long black coat bends backward to dodge bullets on a rooftop, with dramatic green-cyan cinematic lighting, preserving the characters, setting, appearance, and actions of the reference content video.",
+  "content_video": "assets/content/matrix_reference.mp4",
+  "seed": 0,
+  "steps": 40,
+  "num_frames": 41,
+  "output": "outputs/text_motion_v2v_matrix.mp4"
+}

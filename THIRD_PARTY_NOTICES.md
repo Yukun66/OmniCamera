@@ -34,3 +34,12 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
+
+## Research demo media
+
+The short Matrix and Michael Jackson reference clips under `assets/content/`,
+and outputs derived from them under `assets/results/`, are included only as
+research examples of video-content conditioning. They are third-party media,
+remain subject to their respective rights, and are not licensed under the
+Apache License 2.0 that covers the OmniCamera source code. Users may replace
+these clips with their own videos in the corresponding JSON configurations.

@@ -72,14 +72,24 @@ configurations demonstrate:
 | `examples/reference_video_t2v.json` | camera-motion video | text |
 | `examples/trajectory_i2v.json` | 3D trajectory JSON | image |
 | `examples/reference_video_v2v.json` | camera-motion video | video |
+| `examples/text_motion_t2v_beach.json` | motion text (Truck Left) | beach text |
+| `examples/trajectory_t2v_canyon_lake.json` | Forward-Up + Tilt Down trajectory | canyon-lake text |
+| `examples/reference_video_t2v_ski_resort.json` | Truck Left camera video | ski-resort text |
+| `examples/text_motion_v2v_matrix.json` | motion text (Pan Left) | reference video |
+| `examples/reference_video_v2v_michael_jackson.json` | Dolly Out camera video | reference video |
+| `examples/text_motion_i2v_white_car.json` | motion text (Dolly In) | reference image |
+| `examples/trajectory_v2v_matrix.json` | Arc Left trajectory | reference video |
+| `examples/reference_video_i2v_white_car.json` | Dolly Out camera video | reference image |
 
 Every configuration is ordinary JSON, so prompts, input paths, seeds, frame
 counts and inference steps can be changed directly. The implementation supports
 41 or 81 output frames at 16 FPS and uses the trained 1248 × 704 resolution.
 
-## Gradio demo
+## Optional local interface
 
-Launch the interactive interface to access all 3 × 3 modes:
+The primary release is the command-line inference code and reproducible demo
+configurations. An optional local Gradio interface can also access all 3 × 3
+modes; it is not a hosted inference service:
 
 ```bash
 python app.py
@@ -93,20 +103,35 @@ The included JSON files contain `frame0`, `frame1`, ... entries and one or more
 training loader: it takes the first requested 41 or 81 source poses and samples
 every fourth pose for the video latent sequence.
 
-Two ready-to-run 41-frame trajectory examples are included:
+Three ready-to-run 41-frame trajectory examples are included:
 
 - `assets/trajectories/truck_left.json`
 - `assets/trajectories/forward_up_tilt_down.json`
+- `assets/trajectories/arc_left.json`
 
-## Example results
+## Reproducible demos and results
 
-The following videos use the same text prompt, seed 0, 41 frames and 50 steps:
+Each result below has a matching configuration and all required inputs in this
+repository, so it can be viewed immediately or regenerated locally:
 
-- [Motion-text Truck Left](assets/results/dog_text_motion_truck_left.mp4)
-- [Trajectory Truck Left](assets/results/dog_trajectory_truck_left.mp4)
-- [Reference-video Truck Left](assets/results/dog_reference_video_truck_left.mp4)
+| Content | Camera condition | Configuration | Result |
+| --- | --- | --- | --- |
+| Dog running in a garden | motion text: Truck Left | [config](examples/text_motion_t2v.json) | [video](assets/results/dog_text_motion_truck_left.mp4) |
+| Dog running in a garden | trajectory: Truck Left | [config](examples/trajectory_t2v.json) | [video](assets/results/dog_trajectory_truck_left.mp4) |
+| Dog running in a garden | reference video: Truck Left | [config](examples/reference_video_t2v.json) | [video](assets/results/dog_reference_video_truck_left.mp4) |
+| Empty beach and lifeguard tower | motion text: Truck Left | [config](examples/text_motion_t2v_beach.json) | [video](assets/results/beach_text_motion_truck_left.mp4) |
+| Canyon lake | trajectory: Forward-Up + Tilt Down | [config](examples/trajectory_t2v_canyon_lake.json) | [video](assets/results/canyon_lake_trajectory_forward_up_tilt_down.mp4) |
+| Empty ski resort | reference video: Truck Left | [config](examples/reference_video_t2v_ski_resort.json) | [video](assets/results/ski_resort_reference_video_truck_left.mp4) |
+| Matrix-inspired action clip | motion text: Pan Left | [config](examples/text_motion_v2v_matrix.json) | [video](assets/results/matrix_text_motion_pan_left.mp4) |
+| Michael Jackson performance clip | reference video: Dolly Out | [config](examples/reference_video_v2v_michael_jackson.json) | [video](assets/results/michael_jackson_reference_video_dolly_out.mp4) |
+| White car in a canyon | motion text: Dolly In | [config](examples/text_motion_i2v_white_car.json) | [video](assets/results/white_car_text_motion_dolly_in.mp4) |
+| Matrix-inspired action clip | trajectory: Arc Left | [config](examples/trajectory_v2v_matrix.json) | [video](assets/results/matrix_trajectory_arc_left.mp4) |
+| White car in a canyon | reference video: Dolly Out | [config](examples/reference_video_i2v_white_car.json) | [video](assets/results/white_car_reference_video_dolly_out.mp4) |
 
-These small files are for qualitative inspection only. Additional results are
+These small files are for qualitative inspection and reproducibility. The
+Matrix and Michael Jackson source clips are third-party research examples and
+are not covered by the repository's Apache-2.0 license; see
+[`THIRD_PARTY_NOTICES.md`](THIRD_PARTY_NOTICES.md). Additional results are
 available on the project page.
 
 ## Acknowledgements

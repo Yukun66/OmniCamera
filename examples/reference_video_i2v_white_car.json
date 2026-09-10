@@ -1,0 +1,12 @@
+{
+  "camera_type": "Reference camera video",
+  "content_type": "Image",
+  "camera_motion": "Dolly Out",
+  "reference_camera_video": "assets/reference_camera/dolly_out.mp4",
+  "prompt": "A white car speeding through a dramatic rocky canyon, with cinematic natural light, realistic motion and fine details.",
+  "content_image": "assets/content/canyon_white_car.png",
+  "seed": 0,
+  "steps": 40,
+  "num_frames": 41,
+  "output": "outputs/reference_video_i2v_white_car.mp4"
+}

@@ -1,0 +1,10 @@
+{
+  "camera_type": "Text motion",
+  "content_type": "Text",
+  "camera_motion": "Truck Left",
+  "prompt": "A tranquil beach beside a colorful wooden lifeguard tower. Turquoise water shimmers beneath bright sunlight as gentle white-capped waves roll onto the pale sandy shore, with distant buildings and green coastal vegetation under a hazy sky. The beach is empty, with no people.",
+  "seed": 0,
+  "steps": 50,
+  "num_frames": 41,
+  "output": "outputs/text_motion_t2v_beach.mp4"
+}

@@ -15,5 +15,6 @@ __pycache__/
 # Generated outputs
 outputs/
 *.mp4
+!assets/content/*.mp4
 !assets/reference_camera/*.mp4
 !assets/results/*.mp4

@@ -1,0 +1,11 @@
+{
+  "camera_type": "Reference camera video",
+  "content_type": "Text",
+  "camera_motion": "Truck Left",
+  "reference_camera_video": "assets/reference_camera/truck_left.mp4",
+  "prompt": "An empty ski resort covered in pristine white snow beneath a clear deep-blue sky. Green picnic tables, a small wooden hut, an empty chairlift system and a distant snow-covered mountain create a peaceful, crisp winter atmosphere. The scene is completely deserted, with no people or human figures.",
+  "seed": 0,
+  "steps": 50,
+  "num_frames": 41,
+  "output": "outputs/reference_video_t2v_ski_resort.mp4"
+}

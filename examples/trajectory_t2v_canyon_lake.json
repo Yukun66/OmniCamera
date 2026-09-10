@@ -1,0 +1,12 @@
+{
+  "camera_type": "Trajectory",
+  "content_type": "Text",
+  "camera_motion": "Forward-Up + Tilt Down",
+  "trajectory_json": "assets/trajectories/forward_up_tilt_down.json",
+  "trajectory_camera_id": 1,
+  "prompt": "A vast canyon lake surrounded by immense reddish-orange sandstone cliffs and mesas under bright natural daylight. Deep emerald-green water winds through the canyon as several small white boats leave brilliant wakes across its surface. No people or human figures are visible.",
+  "seed": 0,
+  "steps": 50,
+  "num_frames": 41,
+  "output": "outputs/trajectory_t2v_canyon_lake.mp4"
+}
