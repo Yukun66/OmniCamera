@@ -9,6 +9,11 @@ Video Generation with Arbitrary Camera Control**.
 [Project Page](https://yukun66.github.io/omnicamera-webdemo/) ·
 [Model Weights](https://huggingface.co/wykup316/OmniCamera)
 
+> **Release note:** Due to constraints related to an ongoing company project,
+> this public release provides an early-stage training checkpoint and its
+> corresponding inference code. It is not the final model version, so its
+> results may differ from those shown in the paper and project page.
+
 OmniCamera provides independent control over camera motion and video content.
 One model supports all nine combinations of three camera conditions and three
 content conditions.
