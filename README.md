@@ -37,19 +37,33 @@ from Hugging Face. No access token is required.
 
 ## Inference
 
-Run one of the provided examples:
+Each JSON file in [`examples/`](examples/) defines one complete inference task.
+Choose a configuration and run it with `infer.py`:
 
 ```bash
+# Motion text + text content
 python infer.py --config examples/text_motion_t2v.json
+
+# Camera trajectory + image content
+python infer.py --config examples/trajectory_i2v_white_car.json
+
+# Reference camera video + video content
+python infer.py --config examples/reference_video_v2v_matrix.json
 ```
 
-The generated video is saved in `outputs/`. Edit the JSON configuration to
-change the prompt, camera condition, content input, seed, frame count, or
-inference steps.
+On the first run, the base model and OmniCamera checkpoint are downloaded
+automatically. The generated video is then saved in `outputs/`.
 
-Examples for all 3 × 3 tasks are available in [`examples/`](examples/). Their
-input images, videos, camera references, trajectories, and generated results
-are included in [`assets/`](assets/).
+To create a custom task, copy the closest example and edit:
+
+- `camera_type` and `camera_motion` for camera control;
+- `prompt`, `content_image`, or `content_video` for scene content;
+- `trajectory_json` or `reference_camera_video` when required;
+- `steps`, `num_frames`, `seed`, and `output` for generation settings.
+
+Ready-to-use inputs, camera references, trajectories, and generated results are
+included in [`assets/`](assets/). The provided configurations cover the full
+3 × 3 combination of camera and content conditions.
 
 Validate an example without loading the model:
 
