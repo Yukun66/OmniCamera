@@ -1,31 +1,27 @@
 # OmniCamera
 
+### ECCV 2026
+
 Official inference code for **OmniCamera: A Unified Framework for Multi-task
 Video Generation with Arbitrary Camera Control**.
 
 [Paper](https://arxiv.org/abs/2604.06010) ·
-[Project page](https://yukun66.github.io/omnicamera-webdemo/) ·
-[Model weights](https://huggingface.co/wykup316/OmniCamera)
+[Project Page](https://yukun66.github.io/omnicamera-webdemo/) ·
+[Model Weights](https://huggingface.co/wykup316/OmniCamera)
 
-OmniCamera controls camera motion and scene content independently. A single
-full-finetuned checkpoint supports all nine combinations of three camera
-conditions and three content conditions:
+OmniCamera provides independent control over camera motion and video content.
+One model supports all nine combinations of three camera conditions and three
+content conditions.
 
-| Camera condition | Text content | Image content | Video content |
+| Camera condition | Text | Image | Video |
 | --- | --- | --- | --- |
-| Motion text | `t2v` | `i2v` | `v2v` |
-| Camera trajectory | `traj2v_t2v` | `traj2v_i2v` | `traj2v_v2v` |
-| Reference camera video | `r2v_t2v` | `r2v_i2v` | `r2v_v2v` |
-
-> This repository currently releases the inference implementation and demo
-> configurations. Training code will be added after its data- and
-> infrastructure-specific parts are cleaned. The checkpoint is a partial
-> full-finetuning checkpoint, not a LoRA.
+| Motion text | ✓ | ✓ | ✓ |
+| Camera trajectory | ✓ | ✓ | ✓ |
+| Reference camera video | ✓ | ✓ | ✓ |
 
 ## Installation
 
-Python 3.10 or 3.11 and a CUDA GPU are recommended. Install a PyTorch build
-matching your CUDA environment, then install the remaining dependencies:
+Python 3.10 or 3.11 and a CUDA GPU are recommended.
 
 ```bash
 git clone https://github.com/Yukun66/OmniCamera.git
@@ -36,122 +32,33 @@ pip install --upgrade pip
 pip install -r requirements.txt
 ```
 
-The base model is downloaded from `Wan-AI/Wan2.2-TI2V-5B`, and the public
-OmniCamera checkpoint is downloaded automatically from Hugging Face. No access
-token is required for either repository.
+The base model and public OmniCamera checkpoint are downloaded automatically
+from Hugging Face. No access token is required.
 
-The model repository and checkpoint filename may be overridden without editing
-the code:
+## Inference
 
-```bash
-export OMNICAMERA_MODEL_REPO=wykup316/OmniCamera
-export OMNICAMERA_CHECKPOINT=joint_params_step61000.pth
-```
-
-## Quick start
-
-Validate a demo configuration without loading the model:
-
-```bash
-python infer.py --config examples/text_motion_t2v.json --dry-run
-```
-
-Run inference:
+Run one of the provided examples:
 
 ```bash
 python infer.py --config examples/text_motion_t2v.json
 ```
 
-The generated video and a text summary are written to `outputs/`. Every
-configuration is ordinary JSON, so prompts, input paths, seeds, frame counts and
-inference steps can be changed directly. The implementation supports 41 or 81
-output frames at 16 FPS and uses the trained 1248 × 704 resolution.
+The generated video is saved in `outputs/`. Edit the JSON configuration to
+change the prompt, camera condition, content input, seed, frame count, or
+inference steps.
 
-The minimal reproducible set covers all nine camera/content combinations. See
-[`examples/README.md`](examples/README.md) for the 3 × 3 mapping and additional
-examples.
+Examples for all 3 × 3 tasks are available in [`examples/`](examples/). Their
+input images, videos, camera references, trajectories, and generated results
+are included in [`assets/`](assets/).
 
-Validate every bundled configuration and its referenced assets without loading
-the model:
+Validate an example without loading the model:
 
 ```bash
-python scripts/validate_examples.py
-python -m unittest tests.test_examples
+python infer.py --config examples/text_motion_t2v.json --dry-run
 ```
 
-Validate one representative configuration for each of the nine tasks, or run
-the complete 3 × 3 set on a local GPU:
-
-```bash
-python scripts/run_3x3_demos.py
-python scripts/run_3x3_demos.py --generate
-```
-
-The `--generate` flag is intentionally required to avoid launching nine
-expensive inference jobs by accident.
-
-## Repository structure
-
-```text
-OmniCamera/
-├── infer.py                  # JSON-config command-line entry point
-├── omnicamera/inference.py   # model loading and generation
-├── examples/                 # reproducible 3x3 configurations
-├── assets/                   # inputs, trajectories and generated results
-├── diffsynth/                # vendored runtime with OmniCamera modifications
-├── scripts/validate_examples.py
-├── scripts/run_3x3_demos.py  # guarded batch runner for the minimal 3x3 set
-└── tests/test_examples.py
-```
-
-## Camera trajectory format
-
-Trajectory inference consumes camera poses, not a rendered trajectory image.
-The included JSON files contain `frame0`, `frame1`, ... entries and one or more
-`camXX` 4 × 4 camera-to-world matrices per frame. OmniCamera follows its
-training loader: it takes the first requested 41 or 81 source poses and samples
-every fourth pose for the video latent sequence.
-
-Three ready-to-run 41-frame trajectory examples are included:
-
-- `assets/trajectories/truck_left.json`
-- `assets/trajectories/forward_up_tilt_down.json`
-- `assets/trajectories/arc_right.json`
-
-## Reproducible demos and results
-
-Each result below has a matching configuration and all required inputs in this
-repository, so it can be viewed immediately or regenerated locally:
-
-| Content | Camera condition | Configuration | Result |
-| --- | --- | --- | --- |
-| Dog running in a garden | motion text: Truck Left | [config](examples/text_motion_t2v.json) | [video](assets/results/dog_text_motion_truck_left.mp4) |
-| Dog running in a garden | trajectory: Truck Left | [config](examples/trajectory_t2v.json) | [video](assets/results/dog_trajectory_truck_left.mp4) |
-| Dog running in a garden | reference video: Truck Left | [config](examples/reference_video_t2v.json) | [video](assets/results/dog_reference_video_truck_left.mp4) |
-| Empty beach and lifeguard tower | motion text: Truck Left | [config](examples/text_motion_t2v_beach.json) | [video](assets/results/beach_text_motion_truck_left.mp4) |
-| Canyon lake | trajectory: Forward-Up + Tilt Down | [config](examples/trajectory_t2v_canyon_lake.json) | [video](assets/results/canyon_lake_trajectory_forward_up_tilt_down.mp4) |
-| Empty ski resort | reference video: Truck Left | [config](examples/reference_video_t2v_ski_resort.json) | [video](assets/results/ski_resort_reference_video_truck_left.mp4) |
-| Michael Jackson performance clip | motion text: Dolly In | [config](examples/text_motion_v2v_michael_jackson.json) | [video](assets/results/michael_jackson_text_motion_dolly_in.mp4) |
-| Michael Jackson performance clip | reference video: Dolly Out | [config](examples/reference_video_v2v_michael_jackson.json) | [video](assets/results/michael_jackson_reference_video_dolly_out.mp4) |
-| White car in a canyon | motion text: Dolly In | [config](examples/text_motion_i2v_white_car.json) | [video](assets/results/white_car_text_motion_dolly_in.mp4) |
-| White car in a canyon | trajectory: Arc Right | [config](examples/trajectory_i2v_white_car.json) | [video](assets/results/white_car_trajectory_arc_right.mp4) |
-| Michael Jackson performance clip | trajectory: Arc Right | [config](examples/trajectory_v2v_michael_jackson.json) | [video](assets/results/michael_jackson_trajectory_arc_right.mp4) |
-| White car in a canyon | reference video: Dolly Out | [config](examples/reference_video_i2v_white_car.json) | [video](assets/results/white_car_reference_video_dolly_out.mp4) |
-| Matrix-inspired action clip | reference video: Pan Right | [config](examples/reference_video_v2v_matrix.json) | [video](assets/results/matrix_reference_video_pan_right.mp4) |
-
-These small files are for qualitative inspection and reproducibility. The
-Matrix and Michael Jackson source clips are third-party research examples and
-are not covered by the repository's Apache-2.0 license; see
-[`THIRD_PARTY_NOTICES.md`](THIRD_PARTY_NOTICES.md). Additional results are
-available on the project page.
-
-## Acknowledgements
-
-This implementation contains a modified subset of
-[DiffSynth-Studio](https://github.com/modelscope/DiffSynth-Studio), distributed
-under Apache-2.0. The example camera trajectories are adapted from
-[ReCamMaster](https://github.com/KwaiVGI/ReCamMaster), distributed under MIT.
-See [`THIRD_PARTY_NOTICES.md`](THIRD_PARTY_NOTICES.md) and `licenses/`.
+See the [project page](https://yukun66.github.io/omnicamera-webdemo/) for more
+video results.
 
 ## Citation
 
@@ -164,7 +71,14 @@ See [`THIRD_PARTY_NOTICES.md`](THIRD_PARTY_NOTICES.md) and `licenses/`.
 }
 ```
 
+## Acknowledgements
+
+This repository includes modified components from
+[DiffSynth-Studio](https://github.com/modelscope/DiffSynth-Studio) and example
+camera trajectories adapted from
+[ReCamMaster](https://github.com/KwaiVGI/ReCamMaster). See
+[`THIRD_PARTY_NOTICES.md`](THIRD_PARTY_NOTICES.md) for details.
+
 ## License
 
-The OmniCamera code is released under the Apache License 2.0. Third-party
-components remain subject to their respective licenses.
+The OmniCamera code is released under the [Apache License 2.0](LICENSE).
