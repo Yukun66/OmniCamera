@@ -1,7 +1,6 @@
 accelerate>=1.2
 einops>=0.8
 ftfy>=6.3
-gradio>=5.0,<7
 huggingface_hub>=0.30
 imageio[ffmpeg]>=2.36
 modelscope>=1.22

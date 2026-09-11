@@ -62,38 +62,46 @@ Run inference:
 python infer.py --config examples/text_motion_t2v.json
 ```
 
-The generated video and a text summary are written to `outputs/`. The included
-configurations demonstrate:
+The generated video and a text summary are written to `outputs/`. Every
+configuration is ordinary JSON, so prompts, input paths, seeds, frame counts and
+inference steps can be changed directly. The implementation supports 41 or 81
+output frames at 16 FPS and uses the trained 1248 × 704 resolution.
 
-| Configuration | Camera input | Content input |
-| --- | --- | --- |
-| `examples/text_motion_t2v.json` | motion text | text |
-| `examples/trajectory_t2v.json` | 3D trajectory JSON | text |
-| `examples/reference_video_t2v.json` | camera-motion video | text |
-| `examples/trajectory_i2v.json` | 3D trajectory JSON | image |
-| `examples/reference_video_v2v.json` | camera-motion video | video |
-| `examples/text_motion_t2v_beach.json` | motion text (Truck Left) | beach text |
-| `examples/trajectory_t2v_canyon_lake.json` | Forward-Up + Tilt Down trajectory | canyon-lake text |
-| `examples/reference_video_t2v_ski_resort.json` | Truck Left camera video | ski-resort text |
-| `examples/text_motion_v2v_michael_jackson.json` | motion text (Dolly In) | reference video |
-| `examples/reference_video_v2v_michael_jackson.json` | Dolly Out camera video | reference video |
-| `examples/text_motion_i2v_white_car.json` | motion text (Dolly In) | reference image |
-| `examples/trajectory_v2v_michael_jackson.json` | Arc Right trajectory | reference video |
-| `examples/reference_video_i2v_white_car.json` | Dolly Out camera video | reference image |
-| `examples/reference_video_v2v_matrix.json` | Pan Right camera video | reference video |
+The minimal reproducible set covers all nine camera/content combinations. See
+[`examples/README.md`](examples/README.md) for the 3 × 3 mapping and additional
+examples.
 
-Every configuration is ordinary JSON, so prompts, input paths, seeds, frame
-counts and inference steps can be changed directly. The implementation supports
-41 or 81 output frames at 16 FPS and uses the trained 1248 × 704 resolution.
-
-## Optional local interface
-
-The primary release is the command-line inference code and reproducible demo
-configurations. An optional local Gradio interface can also access all 3 × 3
-modes; it is not a hosted inference service:
+Validate every bundled configuration and its referenced assets without loading
+the model:
 
 ```bash
-python app.py
+python scripts/validate_examples.py
+python -m unittest tests.test_examples
+```
+
+Validate one representative configuration for each of the nine tasks, or run
+the complete 3 × 3 set on a local GPU:
+
+```bash
+python scripts/run_3x3_demos.py
+python scripts/run_3x3_demos.py --generate
+```
+
+The `--generate` flag is intentionally required to avoid launching nine
+expensive inference jobs by accident.
+
+## Repository structure
+
+```text
+OmniCamera/
+├── infer.py                  # JSON-config command-line entry point
+├── omnicamera/inference.py   # model loading and generation
+├── examples/                 # reproducible 3x3 configurations
+├── assets/                   # inputs, trajectories and generated results
+├── diffsynth/                # vendored runtime with OmniCamera modifications
+├── scripts/validate_examples.py
+├── scripts/run_3x3_demos.py  # guarded batch runner for the minimal 3x3 set
+└── tests/test_examples.py
 ```
 
 ## Camera trajectory format
@@ -126,6 +134,7 @@ repository, so it can be viewed immediately or regenerated locally:
 | Michael Jackson performance clip | motion text: Dolly In | [config](examples/text_motion_v2v_michael_jackson.json) | [video](assets/results/michael_jackson_text_motion_dolly_in.mp4) |
 | Michael Jackson performance clip | reference video: Dolly Out | [config](examples/reference_video_v2v_michael_jackson.json) | [video](assets/results/michael_jackson_reference_video_dolly_out.mp4) |
 | White car in a canyon | motion text: Dolly In | [config](examples/text_motion_i2v_white_car.json) | [video](assets/results/white_car_text_motion_dolly_in.mp4) |
+| White car in a canyon | trajectory: Arc Right | [config](examples/trajectory_i2v_white_car.json) | [video](assets/results/white_car_trajectory_arc_right.mp4) |
 | Michael Jackson performance clip | trajectory: Arc Right | [config](examples/trajectory_v2v_michael_jackson.json) | [video](assets/results/michael_jackson_trajectory_arc_right.mp4) |
 | White car in a canyon | reference video: Dolly Out | [config](examples/reference_video_i2v_white_car.json) | [video](assets/results/white_car_reference_video_dolly_out.mp4) |
 | Matrix-inspired action clip | reference video: Pan Right | [config](examples/reference_video_v2v_matrix.json) | [video](assets/results/matrix_reference_video_pan_right.mp4) |

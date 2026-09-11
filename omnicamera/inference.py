@@ -1,10 +1,13 @@
+"""OmniCamera model loading, conditioning, and video generation."""
+
+from __future__ import annotations
+
 import json
 import os
 import tempfile
 import threading
 from pathlib import Path
 
-import gradio as gr
 import imageio.v2 as imageio
 import numpy as np
 import torch
@@ -183,7 +186,7 @@ def _center_crop(image, width, height):
 
 def _video_tensor(path, width, height, num_frames=DEFAULT_NUM_FRAMES, fps=FPS):
     if not path:
-        raise gr.Error("Please upload the required video condition.")
+        raise ValueError("Please upload the required video condition.")
     reader = imageio.get_reader(path)
     try:
         metadata = reader.get_meta_data()
@@ -199,7 +202,7 @@ def _video_tensor(path, width, height, num_frames=DEFAULT_NUM_FRAMES, fps=FPS):
         else:
             frames_all = list(reader)
             if not frames_all:
-                raise gr.Error("The uploaded video contains no readable frames.")
+                raise ValueError("The uploaded video contains no readable frames.")
             usable = min(len(frames_all), max(1, round(source_fps * num_frames / fps)))
             indices = np.linspace(0, usable - 1, min(num_frames, usable)).astype(int)
             arrays = [frames_all[index] for index in indices]
@@ -222,7 +225,7 @@ def _parse_matrix(value):
         ]
     matrix = np.asarray(value, dtype=np.float32)
     if matrix.size != 16:
-        raise gr.Error("Each trajectory pose must contain a 4 x 4 camera matrix.")
+        raise ValueError("Each trajectory pose must contain a 4 x 4 camera matrix.")
     return matrix.reshape(4, 4)
 
 
@@ -235,7 +238,7 @@ def _relative_pose(first_pose, current_pose):
 
 def _trajectory_tensor(path, camera_id, num_frames):
     if not path:
-        raise gr.Error(
+        raise ValueError(
             "Trajectory modes require the camera-pose JSON used to render the "
             "trajectory image. A PNG alone does not contain the required 3D poses."
         )
@@ -249,7 +252,7 @@ def _trajectory_tensor(path, camera_id, num_frames):
             key=lambda key: int("".join(ch for ch in key if ch.isdigit()) or 0),
         )
         if not frame_keys:
-            raise gr.Error("No frame0, frame1, ... entries were found in the JSON.")
+            raise ValueError("No frame0, frame1, ... entries were found in the JSON.")
         requested_key = f"cam{int(camera_id):02d}"
         poses = []
         for frame_key in frame_keys:
@@ -261,7 +264,7 @@ def _trajectory_tensor(path, camera_id, num_frames):
                     value = next(iter(frame.values()))
                 else:
                     available = ", ".join(sorted(frame)[:8])
-                    raise gr.Error(
+                    raise ValueError(
                         f"{requested_key} is missing from {frame_key}. "
                         f"Available cameras: {available}"
                     )
@@ -269,12 +272,12 @@ def _trajectory_tensor(path, camera_id, num_frames):
                 value = frame
             poses.append(_parse_matrix(value))
     else:
-        raise gr.Error("Unsupported trajectory JSON structure.")
+        raise ValueError("Unsupported trajectory JSON structure.")
     if len(poses) < 2:
-        raise gr.Error("The trajectory JSON must contain at least two poses.")
+        raise ValueError("The trajectory JSON must contain at least two poses.")
 
     if len(poses) < num_frames:
-        raise gr.Error(
+        raise ValueError(
             f"The trajectory contains {len(poses)} poses, but {num_frames} "
             "source poses are required."
         )
@@ -327,20 +330,20 @@ def generate_video(
     num_frames,
 ):
     if not scene_prompt or not scene_prompt.strip():
-        raise gr.Error("Please enter a content prompt for the generated video.")
+        raise ValueError("Please enter a content prompt for the generated video.")
     mode = MODE_TABLE[(camera_type, content_type)]
     if content_type == "Image" and content_image is None:
-        raise gr.Error("Image-content mode requires an input image.")
+        raise ValueError("Image-content mode requires an input image.")
     if content_type == "Video" and not content_video:
-        raise gr.Error("Video-content mode requires an input video.")
+        raise ValueError("Video-content mode requires an input video.")
     if camera_type == "Reference camera video" and not reference_camera_video:
-        raise gr.Error("Reference-camera mode requires a camera-motion video.")
+        raise ValueError("Reference-camera mode requires a camera-motion video.")
 
     try:
         pipe = _load_pipeline()
         num_frames = int(num_frames)
         if num_frames not in (41, 81):
-            raise gr.Error("Frame count must be either 41 or 81.")
+            raise ValueError("Frame count must be either 41 or 81.")
         use_hierarchical_cfg, text_cfg_scale, camera_cfg_scale = _cfg_for_mode(mode)
         kwargs = {
             "model_mode": mode,
@@ -389,135 +392,8 @@ def generate_video(
             f"Prompt: {kwargs['prompt']}"
         )
         return output_path, summary
-    except gr.Error:
+    except ValueError:
         raise
     except Exception as exc:
-        raise gr.Error(f"{type(exc).__name__}: {exc}") from exc
+        raise ValueError(f"{type(exc).__name__}: {exc}") from exc
 
-
-def update_condition_inputs(camera_type, content_type):
-    return (
-        gr.update(visible=camera_type == "Text motion"),
-        gr.update(visible=camera_type == "Trajectory"),
-        gr.update(visible=camera_type == "Trajectory"),
-        gr.update(visible=camera_type == "Trajectory"),
-        gr.update(visible=camera_type == "Reference camera video"),
-        gr.update(visible=content_type == "Image"),
-        gr.update(visible=content_type == "Video"),
-        f"**Selected task:** `{MODE_TABLE[(camera_type, content_type)]}`",
-    )
-
-
-with gr.Blocks(title="OmniCamera Demo") as demo:
-    gr.Markdown(
-        """
-        # OmniCamera
-        **Multi-task video generation with arbitrary camera control**
-
-        Select one of three camera conditions and one of three content conditions.
-        All **3 × 3 = 9** combinations use the same joint checkpoint.
-
-        > A trajectory image is a visualization. Trajectory inference requires
-        > the corresponding camera-pose JSON because the model consumes 3D poses.
-        """
-    )
-    with gr.Row():
-        with gr.Column(scale=1):
-            camera_type = gr.Radio(
-                CAMERA_CONDITION_TYPES, value="Text motion", label="Camera condition"
-            )
-            content_type = gr.Radio(
-                CONTENT_CONDITION_TYPES, value="Text", label="Content condition"
-            )
-            selected_mode = gr.Markdown("**Selected task:** `t2v`")
-            camera_motion = gr.Dropdown(
-                choices=list(CAMERA_MOTIONS),
-                value="Dolly In",
-                label="Camera-motion text",
-            )
-            trajectory_json = gr.File(
-                label="Trajectory camera poses (JSON)",
-                file_types=[".json"],
-                type="filepath",
-                visible=False,
-            )
-            trajectory_preview = gr.Image(
-                label="Trajectory visualization (optional; display only)",
-                type="pil",
-                visible=False,
-            )
-            trajectory_camera_id = gr.Number(
-                value=1,
-                precision=0,
-                minimum=0,
-                label="Camera index inside JSON",
-                visible=False,
-            )
-            reference_camera_video = gr.Video(
-                label="Reference camera-motion video", visible=False
-            )
-            scene_prompt = gr.Textbox(
-                value="A cinematic coastal city at sunset, realistic details.",
-                label="Content prompt (used by all modes)",
-                lines=4,
-            )
-            content_image = gr.Image(label="Content image", type="pil", visible=False)
-            content_video = gr.Video(label="Content video", visible=False)
-            seed = gr.Number(value=0, precision=0, label="Seed")
-            num_frames = gr.Radio(
-                choices=[41, 81], value=41, label="Output frames"
-            )
-            steps = gr.Slider(10, 50, value=50, step=1, label="Inference steps")
-            generate = gr.Button("Generate", variant="primary")
-        with gr.Column(scale=1):
-            output = gr.Video(label="Generated video", format="mp4")
-            run_summary = gr.Textbox(label="Task summary", lines=6)
-
-    condition_outputs = [
-        camera_motion,
-        trajectory_json,
-        trajectory_preview,
-        trajectory_camera_id,
-        reference_camera_video,
-        content_image,
-        content_video,
-        selected_mode,
-    ]
-    camera_type.change(
-        update_condition_inputs,
-        inputs=[camera_type, content_type],
-        outputs=condition_outputs,
-    )
-    content_type.change(
-        update_condition_inputs,
-        inputs=[camera_type, content_type],
-        outputs=condition_outputs,
-    )
-    generate.click(
-        fn=generate_video,
-        inputs=[
-            camera_type,
-            content_type,
-            camera_motion,
-            trajectory_json,
-            trajectory_camera_id,
-            reference_camera_video,
-            scene_prompt,
-            content_image,
-            content_video,
-            seed,
-            steps,
-            num_frames,
-        ],
-        outputs=[output, run_summary],
-    )
-    gr.Markdown(
-        "Generation supports 41 or 81 frames at 16 FPS and uses the trained "
-        "1248 × 704 resolution. Camera-controlled modes follow the original "
-        "hierarchical-CFG inference profiles.  "
-        "[Paper](https://arxiv.org/abs/2604.06010) · "
-        "[Project page](https://yukun66.github.io/omnicamera-webdemo/)"
-    )
-
-if __name__ == "__main__":
-    demo.queue(max_size=5, default_concurrency_limit=1).launch()

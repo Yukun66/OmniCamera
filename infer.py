@@ -109,7 +109,7 @@ def main():
     if args.dry_run:
         return
 
-    from app import generate_video
+    from omnicamera import generate_video
 
     content_image = None
     if config["content_image"] is not None:
